@@ -1,0 +1,1 @@
+Projet en python appellant une API pour récolter et traiter les données météo de quelques grandes villes.
