@@ -51,6 +51,7 @@ if r.status_code == 200:
         conn.commit()
 
         nb = 0
+
         for i in c.execute('SELECT * FROM Meteo'):
             Releve = relevéMétéo(i)
             if Releve.Canicule():
