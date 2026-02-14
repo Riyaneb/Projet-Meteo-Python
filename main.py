@@ -1,11 +1,11 @@
 import requests
+import reverse_geocoder as rg
 
 
 class relevéMétéo:
     def __init__(self,liste):
-        self.longitude = float(liste[0])
-        self.latitude = float(liste[1])
-        self.elevation = float(liste[2])
+        coord = (float(liste[1]),float(liste[0]))
+        self.ville = rg.search([coord])
         self.temperature = float(liste[3])
 
     def Canicule(self):
@@ -28,6 +28,7 @@ if r.status_code == 200:
     if donnee == None:
         print("Donnée JSON non récupéré")
     else:
+        
         with open("data.csv", "w") as f:
             f.write("Longitude,Latitude,Elevation,Temperature\n")
             for ville in donnee:
@@ -42,15 +43,20 @@ if r.status_code == 200:
             
         with open("data.csv", "r") as f:
             next(f)
+            nb = 0
             for ligne in f:
                 ligne = ligne.strip()
                 colonne = ligne.split(",")
                 Releve = relevéMétéo(colonne)
-                nb = 0
                 if Releve.Canicule():
-                    print(f"Attention, canicule à {Releve.longitude} ; {Releve.latitude} ; {Releve.elevation}")
+                    print(f"Attention, canicule à {Releve.ville[0]['name']} : {Releve.temperature:.2f}C°")
+                    nb += 1
                 elif Releve.Gele():
-                    print(f"Attention, Ca gèle à {Releve.longitude} ; {Releve.latitude} ; {Releve.elevation}")
+                    print(f"Attention, Ca gèle à {Releve.ville[0]['name']} : {Releve.temperature:.2f}C°")
+                    nb += 1
+                
+            if nb != 0:
+                print("Problème nulle part")
 else:
     print("Probème avec l'api")
 
